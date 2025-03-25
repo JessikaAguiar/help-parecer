@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vuetify com CDN</title>
+
+    <!-- Fonts e Vuetify CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.css" rel="stylesheet" />
+    <link href="./assets/css/style.css" rel="stylesheet"/>
+
+    <!-- Vue + Vuetify -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-components.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-directives.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <v-app>
+        <v-main>
+          <v-container>
+            <v-row>
+              <v-col>
+                <p>Ajuda - Parecer</p>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <p>Aqui você pode consultar, redigir e aperfeiçoar pareceres com base nas solicitações recebidas.</p>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  label="Modelo de parecer"
+                  :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                  variant="outlined"
+                ></v-select>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="d-flex">
+                <v-card
+                  class="mx-auto my-8"
+                  elevation="16"
+                  max-width="344"
+                  hover
+                >
+                  <v-card-text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  </v-card-text>
+                </v-card>
+                <v-card
+                  class="mx-auto my-8"
+                  elevation="16"
+                  max-width="344"
+                  hover
+                >
+                  <v-card-text>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                  </v-card-text>
+                </v-card>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <p>Descreva ou melhore o seu parecer</p>
+                <v-form>
+                  <v-textarea clearable variant="outlined" counter></v-textarea>
+                  <v-container fluid>
+                    <v-row>
+                      <v-col>
+                        <v-col cols="auto">
+                          <v-btn variant="text" color="red">Limpar</v-btn>
+                        </v-col>
+                      </v-col>
+                      <v-col>
+                        <v-col cols="auto">
+                          <v-btn color="primary">Confirmar</v-btn>
+                        </v-col>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-form>
+
+              </v-col>
+            </v-row>
+
+            <v-divider class="my-10" :thickness="1"></v-divider>
+
+            <v-row>
+              <v-col>
+                <h3 class="mb-2">Página 1</h3>
+                <v-textarea clearable variant="outlined" counter></v-textarea>
+                  <v-container fluid>
+                    <v-row>
+                      <v-col>
+                        <v-col cols="auto">
+                          <v-btn color="primary">Cópiar</v-btn>
+                        </v-col>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <h3 class="mb-2">Página 2</h3>
+                <v-textarea clearable variant="outlined" counter></v-textarea>
+                  <v-container fluid>
+                    <v-row>
+                      <v-col>
+                        <v-col cols="auto">
+                          <v-btn color="primary">Cópiar</v-btn>
+                        </v-col>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-main>
+      </v-app>
+    </div>
+
+    <script type="module" src="./assets/js/main.js"></script>
+  </body>
+</html>
