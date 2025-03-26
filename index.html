@@ -36,91 +36,98 @@
               <v-col>
                 <v-select
                   label="Modelo de parecer"
-                  :items="['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming']"
+                  :items="types"
+                  item-title="name"
+                  item-value="id"
                   variant="outlined"
+                  v-model="selectType"
                 ></v-select>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col class="d-flex">
-                <v-card
-                  class="mx-auto my-8"
-                  elevation="16"
-                  max-width="344"
-                  hover
-                >
-                  <v-card-text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </v-card-text>
-                </v-card>
-                <v-card
-                  class="mx-auto my-8"
-                  elevation="16"
-                  max-width="344"
-                  hover
-                >
-                  <v-card-text>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  </v-card-text>
-                </v-card>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <p>Descreva ou melhore o seu parecer</p>
-                <v-form>
-                  <v-textarea clearable variant="outlined" counter></v-textarea>
-                  <v-container fluid>
-                    <v-row>
-                      <v-col>
-                        <v-col cols="auto">
-                          <v-btn variant="text" color="red">Limpar</v-btn>
-                        </v-col>
-                      </v-col>
-                      <v-col>
-                        <v-col cols="auto">
-                          <v-btn color="primary">Confirmar</v-btn>
-                        </v-col>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-form>
-
               </v-col>
             </v-row>
 
             <v-divider class="my-10" :thickness="1"></v-divider>
 
-            <v-row>
-              <v-col>
-                <h3 class="mb-2">Página 1</h3>
-                <v-textarea clearable variant="outlined" counter></v-textarea>
+            <template v-if="selectType">
+              <v-row>
+                <v-col class="d-flex justify-space-between align-center">
+                    <template v-if="listParecer.length"
+                    >
+                    <v-card
+                    v-for="item in listParecer"
+                    :key="item.id"
+                    class="mx-auto my-4"
+                    elevation="10"
+                    max-width="700"
+                    hover
+                    @click="getParecer(item)"
+                  >
+                    <v-card-text>
+                      {{ item.text }}
+                    </v-card-text>
+                  </v-card>
+                    </v-card>
+                  </template>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <p>Descreva ou melhore</p>
+                  <v-form>
+                    <v-textarea 
+                    auto-grow 
+                    variant="outlined"
+                    v-model="parecer" 
+                    :counter="maxCaractere"
+                    :maxlength="maxCaractere"
+                    rows="14"
+                    style="font-family: 'Courier New', monospace; white-space: pre-wrap;"
+                    />
+                  </v-form>
                   <v-container fluid>
                     <v-row>
                       <v-col>
                         <v-col cols="auto">
-                          <v-btn color="primary">Cópiar</v-btn>
+                          <v-btn variant="text" color="red" @click="clear">Limpar</v-btn>
+                        </v-col>
+                      </v-col>
+                      <v-col>
+                        <v-col cols="auto" class="d-flex justify-end">
+                          <v-btn color="primary" @click="confirmarParecer">Confirmar</v-btn>
                         </v-col>
                       </v-col>
                     </v-row>
                   </v-container>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <h3 class="mb-2">Página 2</h3>
-                <v-textarea clearable variant="outlined" counter></v-textarea>
+                  
+  
+                </v-col>
+              </v-row>
+  
+              <v-divider class="my-10" :thickness="1"></v-divider>
+              <template v-if="paginasFormatadas">
+                <v-row
+                v-for="(pagina, index) in paginasFormatadas"
+                :key="index"
+              >
+                <v-col>
+                  <h3 class="mb-2">Página {{ index + 1 }}</h3>
+                  <p>{{paginasFormatadas[index]}}</p>
                   <v-container fluid>
                     <v-row>
-                      <v-col>
-                        <v-col cols="auto">
-                          <v-btn color="primary">Cópiar</v-btn>
-                        </v-col>
+                      <v-col cols="auto">
+                        <v-btn
+                          color="primary"
+                          @click="copiarTexto(pagina)"
+                        >
+                          CÓPIAR
+                        </v-btn>
                       </v-col>
                     </v-row>
                   </v-container>
-              </v-col>
-            </v-row>
+                </v-col>
+              </v-row>
+              </template>
+              
+            </template>
           </v-container>
         </v-main>
       </v-app>
