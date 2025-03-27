@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajuda - Parecer</title>
+
+    <!-- Fonts e Vuetify CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.css" rel="stylesheet" />
+    <link href="./assets/css/style.css" rel="stylesheet"/>
+
+    <!-- Vue + Vuetify -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-components.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-directives.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <v-app>
+        <v-main>
+          <v-container>
+            <v-row>
+              <v-col>
+                <h1>Ajuda - Parecer</h1>
+                <h2>Específico</h2>
+                <p>Deseja só digitar um texto e trata-lo? <a href="../index.html" class="skip-link">Clique aqui!</a></p>
+                
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <p>Aqui você pode consultar, redigir e aperfeiçoar pareceres com base nas solicitações recebidas.</p>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-select
+                  label="Modelo de parecer"
+                  :items="types"
+                  item-title="name"
+                  item-value="id"
+                  variant="outlined"
+                  v-model="selectType"
+                ></v-select>
+              </v-col>
+            </v-row>
+
+            <v-divider class="my-10" :thickness="1"></v-divider>
+
+            <template v-if="selectType">
+              <v-row style="height: 15%;">
+                <v-col cols="6">
+                  <v-form>
+                    <p>Descreva ou melhore</p>
+                    <v-textarea 
+                    @keydown="verificarCapsLock"
+                    auto-grow 
+                    variant="outlined"
+                    v-model="parecer"
+                    :maxlength="maxCaractere"
+                    :rows="qtdPaginas"
+                    ></v-textarea>
+                    <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
+                    <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
+                  </v-form>
+                  <v-container fluid>
+                    <v-row>
+                      <v-col>
+                        <v-col cols="auto">
+                          <v-btn variant="text" color="red" @click="clear">Limpar</v-btn>
+                        </v-col>
+                      </v-col>
+                      <v-col>
+                        <v-col cols="auto" class="d-flex justify-end">
+                          <v-btn :disabled="alertText || (!parecer.length > 0)" color="primary" @click="confirmarParecer">Confirmar</v-btn>
+                        </v-col>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-col>
+                <v-col cols="6" class="d-flex flex-column justify-start align-center">
+                  <div v-if="listParecer.length" style="padding: 5px; height: 95%; max-width: 100%; overflow: auto;"
+                  >
+                    <v-card
+                    v-for="item in listParecer"
+                    :key="item.id"
+                    class="mx-auto my-4 ma-10"
+                    elevation="10"
+                    max-width="700"
+                    hover
+                    @click="getParecer(item)"
+                  >
+                    <v-card-text>
+                      {{ item.text }}
+                    </v-card-text>
+                    </v-card>
+                  </div>
+                </v-col>
+              </v-row>
+  
+              <v-divider class="my-10" :thickness="1"></v-divider>
+              <template v-if="paginasFormatadas">
+                <v-row
+                v-for="(pagina, index) in paginasFormatadas"
+                :key="index"
+              >
+                <v-col>
+                  <h3 class="mb-2">Página {{ index + 1 }}</h3>
+                  <v-textarea auto-grow disabled v-model="paginasFormatadas[index]" variant="outlined"></v-textarea>
+                  <v-container fluid>
+                    <v-row>
+                      <v-col cols="auto">
+                        <v-btn
+                          color="primary"
+                          @click="copiarTexto(pagina)"
+                        >
+                          CÓPIAR
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                </v-col>
+              </v-row>
+              </template>
+            </template>
+          </v-container>
+        </v-main>
+      </v-app>
+    </div>
+    
+
+    <script type="module" src="../assets/js/main.js"></script>
+  </body>
+</html>

@@ -10,12 +10,12 @@ const app = createApp({
     selectType: null,
     allPareceres: [],
     parecer: "",
-    caractereSocio: 2156,
-    caractereFicai: 770,
     maxCaractere: 0,
     qtdPaginas: 0,
     qtdLinhas: 0,
     paginasFormatadas: [],
+    capsLockAtivo: false,
+    alertText: false,
   }),
 
   mounted() {
@@ -25,16 +25,25 @@ const app = createApp({
   watch: {
     selectType(value) {
       if (value === '75989fa6-aefb-4ed4-839b-916ce722f791') {
-        this.maxCaractere = this.caractereFicai;
         this.qtdPaginas = 1;
         this.qtdLinhas = 10;
       } else {
-        this.maxCaractere = this.caractereSocio;
         this.qtdPaginas = 2;
         this.qtdLinhas = 14;
       }
+      this.maxCaractere = this.qtdPaginas * this.qtdLinhas * 77;
       this.clear();
     },
+    parecer(value) {
+      if(value.length > 0 ) {
+        const { linhas } = this.formatarTexto(this.parecer);
+        const totalPermitido = this.qtdPaginas * this.qtdLinhas;
+        this.alertText = linhas.length > totalPermitido;
+      } else {
+        this.paginasFormatadas = [];
+      }
+      
+    }
   },
   computed: {
     listParecer() {
@@ -90,23 +99,27 @@ const app = createApp({
     },
     confirmarParecer() {
       const { linhas } = this.formatarTexto(this.parecer);
-      const maxLinhasPorPagina = 14;
-      const maxPaginas = 2;
-      const maxTotalLinhas = this.qtdLinhas;
+      if (linhas.length > this.qtdPaginas * this.qtdLinhas) {
+        this.paginasFormatadas = [];
+        return;
+      }
 
       this.paginasFormatadas = [];
+      const maxLinhasPorPagina  = this.qtdLinhas;
 
-  for (let i = 0; i < maxPaginas; i++) {
-    const inicio = i * maxLinhasPorPagina;
-    const fim = inicio + maxLinhasPorPagina;
+    for (let i = 0; i < this.qtdPaginas; i++) {
+      const inicio = i * maxLinhasPorPagina;
+      const fim = inicio + maxLinhasPorPagina;
 
-    const linhasPagina = linhas.slice(inicio, fim);
+      const linhasPagina = linhas.slice(inicio, fim);
 
-    // Se não houver mais conteúdo, pare
-    if (!linhasPagina.length) break;
-
-    this.paginasFormatadas.push(linhasPagina.join('\n'));
-  }
+      if (linhasPagina.length > 0) {
+        this.paginasFormatadas.push(linhasPagina.join('\n'));
+      }
+    }
+    },
+    verificarCapsLock(event) {
+      this.capsLockAtivo = event.getModifierState && event.getModifierState('CapsLock');
     }
   }
 });
