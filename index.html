@@ -26,29 +26,24 @@
               <v-col>
                 <h1>Ajuda - Parecer</h1>
                 <h2>Geral</h2>
-                <p>Busca algo mais específico? <a href="pages/especifico.html" class="skip-link">Clique aqui!</a></p>
+                <p class="my-10">Busca algo mais específico? <a href="pages/especifico.html" class="skip-link">Clique aqui!</a></p>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <p>Aqui você pode consultar, redigir e aperfeiçoar pareceres com base nas solicitações recebidas.</p>
+                <p>Aqui você redigir seu parecere e formatar .</p>
               </v-col>
             </v-row>
             <v-row style="height: 15%;">
-              <v-col cols="6">
-                <v-form>
-                  <p>Descreva ou melhore</p>
+              <v-col cols="12">
+                <p>Descreva seu texto</p>
                   <v-textarea 
                   @keydown="verificarCapsLock"
                   auto-grow 
                   variant="outlined"
                   v-model="parecer"
-                  :maxlength="maxCaractere"
-                  :rows="qtdPaginas"
                   ></v-textarea>
                   <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
-                  <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
-                </v-form>
                 <v-container fluid>
                   <v-row>
                     <v-col>
@@ -58,29 +53,11 @@
                     </v-col>
                     <v-col>
                       <v-col cols="auto" class="d-flex justify-end">
-                        <v-btn :disabled="alertText || (!parecer.length > 0)" color="primary" @click="confirmarParecer">Confirmar</v-btn>
+                        <v-btn :disabled="(!parecer.length > 0)" color="primary" @click="confirmarParecerGeral">Confirmar</v-btn>
                       </v-col>
                     </v-col>
                   </v-row>
                 </v-container>
-              </v-col>
-              <v-col cols="6" class="d-flex flex-column justify-start align-center">
-                <div v-if="listParecer.length" style="padding: 5px; height: 95%; max-width: 100%; overflow: auto;"
-                >
-                  <v-card
-                  v-for="item in listParecer"
-                  :key="item.id"
-                  class="mx-auto my-4 ma-10"
-                  elevation="10"
-                  max-width="700"
-                  hover
-                  @click="getParecer(item)"
-                >
-                  <v-card-text>
-                    {{ item.text }}
-                  </v-card-text>
-                  </v-card>
-                </div>
               </v-col>
             </v-row>
 

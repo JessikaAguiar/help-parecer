@@ -1,6 +1,6 @@
 const { createApp } = Vue;
 const { createVuetify } = Vuetify;
-const JSON_PATH = `assets/db/db.json`;
+const JSON_PATH = `../assets/db/db.json`;
 
 const vuetify = createVuetify();
 
@@ -70,6 +70,8 @@ const app = createApp({
     clear() {
       this.parecer = "";
       this.paginasFormatadas = [];
+      this.capsLockAtivo = false;
+      this.alertText = false;
     },
     copiarTexto(texto) {
       navigator.clipboard.writeText(texto).then(() => {
@@ -107,19 +109,36 @@ const app = createApp({
       this.paginasFormatadas = [];
       const maxLinhasPorPagina  = this.qtdLinhas;
 
-    for (let i = 0; i < this.qtdPaginas; i++) {
-      const inicio = i * maxLinhasPorPagina;
-      const fim = inicio + maxLinhasPorPagina;
+      for (let i = 0; i < this.qtdPaginas; i++) {
+        const inicio = i * maxLinhasPorPagina;
+        const fim = inicio + maxLinhasPorPagina;
 
-      const linhasPagina = linhas.slice(inicio, fim);
+        const linhasPagina = linhas.slice(inicio, fim);
 
-      if (linhasPagina.length > 0) {
-        this.paginasFormatadas.push(linhasPagina.join('\n'));
-      }
+        if (linhasPagina.length > 0) {
+          this.paginasFormatadas.push(linhasPagina.join('\n'));
+        }
     }
     },
     verificarCapsLock(event) {
       this.capsLockAtivo = event.getModifierState && event.getModifierState('CapsLock');
+    },
+    confirmarParecerGeral() {
+      const { linhas } = this.formatarTexto(this.parecer);
+      this.paginasFormatadas = [];
+
+      const maxLinhasPorPagina = 10;
+      const totalPaginas = Math.ceil(linhas.length / maxLinhasPorPagina);
+
+      for (let i = 0; i < totalPaginas; i++) {
+        const inicio = i * maxLinhasPorPagina;
+        const fim = inicio + maxLinhasPorPagina;
+
+        const linhasPagina = linhas.slice(inicio, fim);
+        if (linhasPagina.length > 0) {
+          this.paginasFormatadas.push(linhasPagina.join('\n'));
+        }
+      }
     }
   }
 });

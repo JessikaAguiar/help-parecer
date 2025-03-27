@@ -26,8 +26,7 @@
               <v-col>
                 <h1>Ajuda - Parecer</h1>
                 <h2>Específico</h2>
-                <p>Deseja só digitar um texto e trata-lo? <a href="../index.html" class="skip-link">Clique aqui!</a></p>
-                
+                <p class="my-10">Deseja só digitar um texto e trata-lo? <a href="../index.html" class="skip-link">Clique aqui!</a></p>
               </v-col>
             </v-row>
             <v-row>
@@ -53,19 +52,36 @@
             <template v-if="selectType">
               <v-row style="height: 15%;">
                 <v-col cols="6">
-                  <v-form>
-                    <p>Descreva ou melhore</p>
-                    <v-textarea 
-                    @keydown="verificarCapsLock"
-                    auto-grow 
-                    variant="outlined"
-                    v-model="parecer"
-                    :maxlength="maxCaractere"
-                    :rows="qtdPaginas"
-                    ></v-textarea>
-                    <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
-                    <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
-                  </v-form>
+                  <template v-if="selectType === '75989fa6-aefb-4ed4-839b-916ce722f791'">
+                    <v-form>
+                      <p>Situação observada:</p>
+                      <v-textarea 
+                      @keydown="verificarCapsLock"
+                      auto-grow 
+                      variant="outlined"
+                      v-model="parecer"
+                      :maxlength="maxCaractere"
+                      :rows="qtdPaginas"
+                      ></v-textarea>
+                      <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
+                      <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
+
+
+                      <p>Orientação dadas a familia:</p>
+                      <v-textarea 
+                      @keydown="verificarCapsLock"
+                      auto-grow 
+                      variant="outlined"
+                      v-model="parecer"
+                      :maxlength="maxCaractere"
+                      :rows="qtdPaginas"
+                      ></v-textarea>
+                      <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
+                      <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
+                    </v-form>
+                  </template>
+                  <template v-else></template>
+                  
                   <v-container fluid>
                     <v-row>
                       <v-col>
