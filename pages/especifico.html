@@ -8,7 +8,7 @@
     <!-- Fonts e Vuetify CSS -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.css" rel="stylesheet" />
-    <link href="./assets/css/style.css" rel="stylesheet"/>
+    <link href="../assets/css/style.css" rel="stylesheet"/>
 
     <!-- Vue + Vuetify -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"></script>
@@ -21,12 +21,12 @@
     <div id="app">
       <v-app>
         <v-main>
-          <v-container>
+          <v-container fluid>
             <v-row>
               <v-col>
                 <h1>Ajuda - Parecer</h1>
                 <h2>Específico</h2>
-                <p class="my-10">Deseja só digitar um texto e trata-lo? <a href="../index.html" class="skip-link">Clique aqui!</a></p>
+                <p class="my-10">Deseja só digitar um texto e trata-lo? <v-btn color="deep-purple" href="../index.html" class="skip-link">Clique aqui!</v-btn></p>
               </v-col>
             </v-row>
             <v-row>
@@ -51,37 +51,138 @@
 
             <template v-if="selectType">
               <v-row style="height: 15%;">
-                <v-col cols="6">
-                  <template v-if="selectType === '75989fa6-aefb-4ed4-839b-916ce722f791'">
-                    <v-form>
-                      <p>Situação observada:</p>
-                      <v-textarea 
-                      @keydown="verificarCapsLock"
-                      auto-grow 
-                      variant="outlined"
-                      v-model="parecer"
-                      :maxlength="maxCaractere"
-                      :rows="qtdPaginas"
-                      ></v-textarea>
-                      <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
-                      <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
-
-
-                      <p>Orientação dadas a familia:</p>
-                      <v-textarea 
-                      @keydown="verificarCapsLock"
-                      auto-grow 
-                      variant="outlined"
-                      v-model="parecer"
-                      :maxlength="maxCaractere"
-                      :rows="qtdPaginas"
-                      ></v-textarea>
-                      <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
-                      <span v-if="alertText">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</span>
-                    </v-form>
-                  </template>
-                  <template v-else></template>
+                <v-col>
+                  <v-container fluid>
+                    <template v-if="selectType === '75989fa6-aefb-4ed4-839b-916ce722f791'">
+                      <v-row>
+                        <v-col cols="6">
+                          <p>Situação observada:</p>
+                          <v-textarea 
+                          @keydown="verificarCapsLock($event, 'situacao')"
+                          @input="verificarLimite(parecerFicai.situacao, 'situacao')"
+                          auto-grow 
+                          variant="outlined"
+                          v-model="parecerFicai.situacao"
+                          :maxlength="maxCaractere"
+                          :rows="qtdPaginas"
+                          ></v-textarea>
+                          <div class="mb-10">
+                            <p v-if="capsLockCampos.situacao">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                            <p v-if="alertas.situacao">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                          </div>
+                        </v-col>
+                        <v-col cols="6" class="d-flex flex-column justify-start align-start">
+                          <v-btn color="orange lighten-3" @click="showFicaiSituacao = !showFicaiSituacao">Modelos de Situação Observada</v-btn>
+                          <div v-if="showFicaiSituacao" style="display: flex; gap: 12px; overflow-x: auto; padding: 10px; max-width: 100%;"
+                          >
+                            <v-card
+                            v-for="item in getAllParecerByEspecific('FICAI_SITUACAO')"
+                            :key="item.id"
+                            class="mx-auto my-4 ma-10"
+                            elevation="10"
+                            style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                            hover
+                            @click="getParecer(item)"
+                          >
+                            <v-card-text style="white-space: normal;">
+                              {{ item.text }}
+                            </v-card-text>
+                            </v-card>
+                          </div>
+                        </v-col>
+                      </v-row>
+                      <v-row>
+                        <v-col cols="6">
+                          <p>Orientações Dadas à Família:</p>
+                          <v-textarea 
+                          @keydown="verificarCapsLock($event, 'orientacaoFicai')"
+                          @input="verificarLimite(parecerFicai.orientacao, 'orientacaoFicai')"
+                          auto-grow 
+                          variant="outlined"
+                          v-model="parecerFicai.orientacao"
+                          :maxlength="maxCaractere"
+                          :rows="qtdPaginas"
+                          ></v-textarea>
+                          <div class="mb-10">
+                            <p v-if="capsLockCampos.orientacaoFicai">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                            <p v-if="alertas.orientacaoFicai">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                          </div>
+                        </v-col>
+                        <v-col cols="6" class="d-flex flex-column justify-start align-start">
+                          <v-btn color="orange lighten-3" @click="showFicaiOrientacao = !showFicaiOrientacao">Modelos de Orientações Dadas à Família</v-btn>
+                          <div v-if="showFicaiOrientacao" style="display: flex; gap: 12px; overflow-x: auto; padding: 10px; max-width: 100%;"
+                          >
+                            <v-card
+                            v-for="item in getAllParecerByEspecific('FICAI_ORIENTACAO')"
+                            :key="item.id"
+                            class="mx-auto my-4 ma-10"
+                            elevation="10"
+                            style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                            hover
+                            @click="getParecer(item)"
+                          >
+                            <v-card-text>
+                              {{ item.text }}
+                            </v-card-text>
+                            </v-card>
+                          </div>
+                        </v-col>
+                      </v-row>
+                    </template>
+                    <template v-else>
+                      <v-form>
+                        <p>Parecer da equipe multiprofissional:</p>
+                        <v-textarea 
+                        @keydown="verificarCapsLock($event, 'equipe')"
+                        @input="verificarLimite(parecerSocio.equipe, 'equipe')"
+                        auto-grow 
+                        variant="outlined"
+                        v-model="parecerSocio.equipe"
+                        :maxlength="maxCaractere"
+                        :rows="qtdPaginas"
+                        ></v-textarea>
+                        <div class="mb-10">
+                          <p v-if="capsLockCampos.equipe">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                          <p v-if="alertas.equipe">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                        </div>
+                        
+  
+  
+                        <p>Parecer Técnico:</p>
+                        <v-textarea 
+                        @keydown="verificarCapsLock($event, 'tecnico')"
+                        @input="verificarLimite(parecerSocio.tecnico, 'tecnico')"
+                        auto-grow 
+                        variant="outlined"
+                        v-model="parecerSocio.tecnico"
+                        :maxlength="maxCaractere"
+                        :rows="qtdPaginas"
+                        ></v-textarea>
+                        <div class="mb-10">
+                          <p v-if="capsLockCampos.tecnico">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                          <p v-if="alertas.tecnico">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                        </div>
+                        
+  
+                        <p>Orientações Finais:</p>
+                        <v-textarea 
+                        @keydown="verificarCapsLock($event, 'orientacaoSocio')"
+                        @input="verificarLimite(parecerSocio.orientacao, 'orientacaoSocio')"
+                        auto-grow 
+                        variant="outlined"
+                        v-model="parecerSocio.orientacao"
+                        :maxlength="maxCaractere"
+                        :rows="qtdPaginas"
+                        ></v-textarea>
+                        <div class="mb-10">
+                          <p v-if="capsLockCampos.orientacaoSocio">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                          <p v-if="alertas.orientacaoSocio">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                        </div>
+                      </v-form>
+                    </template>
+                  </v-container>
                   
+
                   <v-container fluid>
                     <v-row>
                       <v-col>
@@ -91,55 +192,36 @@
                       </v-col>
                       <v-col>
                         <v-col cols="auto" class="d-flex justify-end">
-                          <v-btn :disabled="alertText || (!parecer.length > 0)" color="primary" @click="confirmarParecer">Confirmar</v-btn>
+                          
+                          <v-btn :disabled="botaoDesabilitado" color="primary" @click="confirmarParecer">Confirmar</v-btn>
                         </v-col>
                       </v-col>
                     </v-row>
                   </v-container>
                 </v-col>
-                <v-col cols="6" class="d-flex flex-column justify-start align-center">
-                  <div v-if="listParecer.length" style="padding: 5px; height: 95%; max-width: 100%; overflow: auto;"
-                  >
-                    <v-card
-                    v-for="item in listParecer"
-                    :key="item.id"
-                    class="mx-auto my-4 ma-10"
-                    elevation="10"
-                    max-width="700"
-                    hover
-                    @click="getParecer(item)"
-                  >
-                    <v-card-text>
-                      {{ item.text }}
-                    </v-card-text>
-                    </v-card>
-                  </div>
-                </v-col>
               </v-row>
   
               <v-divider class="my-10" :thickness="1"></v-divider>
               <template v-if="paginasFormatadas">
-                <v-row
-                v-for="(pagina, index) in paginasFormatadas"
-                :key="index"
-              >
-                <v-col>
-                  <h3 class="mb-2">Página {{ index + 1 }}</h3>
-                  <v-textarea auto-grow disabled v-model="paginasFormatadas[index]" variant="outlined"></v-textarea>
-                  <v-container fluid>
+                <template v-for="(secao, sIndex) in paginasFormatadas" :key="`secao-${sIndex}`">
+                  <template v-for="(pagina, pIndex) in secao.paginas" :key="`pagina-${sIndex}-${pIndex}`">
                     <v-row>
-                      <v-col cols="auto">
-                        <v-btn
-                          color="primary"
-                          @click="copiarTexto(pagina)"
-                        >
-                          CÓPIAR
-                        </v-btn>
+                      <v-col>
+                        <h3 class="mb-2">{{ secao.titulo }} - Página {{ pIndex + 1 }}</h3>
+                        <v-textarea auto-grow disabled :model-value="pagina" variant="outlined"></v-textarea>
+                        <v-container fluid>
+                          <v-row>
+                            <v-col cols="auto">
+                              <v-btn color="primary" @click="copiarTexto(pagina)">
+                                CÓPIAR
+                              </v-btn>
+                            </v-col>
+                          </v-row>
+                        </v-container>
                       </v-col>
                     </v-row>
-                  </v-container>
-                </v-col>
-              </v-row>
+                  </template>
+                </template>
               </template>
             </template>
           </v-container>

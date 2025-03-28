@@ -7,15 +7,34 @@ const vuetify = createVuetify();
 const app = createApp({
   data: () => ({
     types: [],
+    typesEspecific: [],
     selectType: null,
     allPareceres: [],
     parecer: "",
+    parecerFicai: {situacao: '', orientacao: ''},
+    parecerSocio: {equipe: '', tecnico: '', orientacao: ''},
     maxCaractere: 0,
     qtdPaginas: 0,
     qtdLinhas: 0,
     paginasFormatadas: [],
     capsLockAtivo: false,
     alertText: false,
+    showFicaiOrientacao: false,
+    showFicaiSituacao: false,
+    alertas: {
+      situacao: false,
+      orientacaoFicai: false,
+      equipe: false,
+      tecnico: false,
+      orientacaoSocio: false,
+    },
+    capsLockCampos: {
+      situacao: false,
+      orientacaoFicai: false,
+      equipe: false,
+      tecnico: false,
+      orientacaoSocio: false
+    },
   }),
 
   mounted() {
@@ -46,9 +65,28 @@ const app = createApp({
     }
   },
   computed: {
-    listParecer() {
-      return this.allPareceres.filter(p => p.type === this.selectType);
-    },
+    botaoDesabilitado() {
+      // 1. Se algum alerta de limite estiver ativo
+      const alertaAtivo = Object.values(this.alertas).some(alerta => alerta === true);
+  
+      // 2. Verificar campos obrigatórios
+      if (this.selectType === '75989fa6-aefb-4ed4-839b-916ce722f791') {
+        // FICAI
+        const camposPreenchidos =
+          this.parecerFicai.situacao.trim().length > 0 &&
+          this.parecerFicai.orientacao.trim().length > 0;
+  
+        return alertaAtivo || !camposPreenchidos;
+      } else {
+        // SOCIO
+        const camposPreenchidos =
+          this.parecerSocio.equipe.trim().length > 0 &&
+          this.parecerSocio.tecnico.trim().length > 0 &&
+          this.parecerSocio.orientacao.trim().length > 0;
+  
+        return alertaAtivo || !camposPreenchidos;
+      }
+    }
   },
 
   methods: {
@@ -59,16 +97,28 @@ const app = createApp({
         const data = await response.json();
 
         this.types = data.types;
+        this.typesEspecific = data.types_especific
         this.allPareceres = data.parecer;
       } catch (error) {
         console.error('Erro ao buscar os pareceres:', error);
       }
+    },
+    getTypeEspecific(type) {
+      return this.typesEspecific.find(p => p.type === type)
+
+    },
+    getAllParecerByEspecific(typeKey) {
+      const type = this.getTypeEspecific(typeKey);
+      return this.allPareceres.filter(p => p.type === type?.id);
     },
     getParecer(item) {
       this.parecer = item.text;
     },
     clear() {
       this.parecer = "";
+      this.parecerFicai = {situacao: '', orientacao: ''},
+      this.parecerSocio = {equipe: '', tecnico: '', orientacao: ''},
+
       this.paginasFormatadas = [];
       this.capsLockAtivo = false;
       this.alertText = false;
@@ -99,29 +149,38 @@ const app = createApp({
     
       return { linhas };
     },
-    confirmarParecer() {
-      const { linhas } = this.formatarTexto(this.parecer);
-      if (linhas.length > this.qtdPaginas * this.qtdLinhas) {
-        this.paginasFormatadas = [];
-        return;
-      }
-
-      this.paginasFormatadas = [];
-      const maxLinhasPorPagina  = this.qtdLinhas;
-
-      for (let i = 0; i < this.qtdPaginas; i++) {
+    processarCampo(texto) {
+      const { linhas } = this.formatarTexto(texto);
+      const maxLinhasPorPagina = this.qtdLinhas;
+      const paginas = [];
+  
+      const totalPaginas = Math.ceil(linhas.length / maxLinhasPorPagina);
+      for (let i = 0; i < totalPaginas; i++) {
         const inicio = i * maxLinhasPorPagina;
         const fim = inicio + maxLinhasPorPagina;
-
         const linhasPagina = linhas.slice(inicio, fim);
-
         if (linhasPagina.length > 0) {
-          this.paginasFormatadas.push(linhasPagina.join('\n'));
+          paginas.push(linhasPagina.join('\n'));
         }
-    }
-    },
-    verificarCapsLock(event) {
-      this.capsLockAtivo = event.getModifierState && event.getModifierState('CapsLock');
+      }
+      return paginas;
+    }, 
+    confirmarParecer() {
+      this.paginasFormatadas = [];
+      if (this.selectType === '75989fa6-aefb-4ed4-839b-916ce722f791') {
+        // FICAI
+        this.paginasFormatadas.push(
+          { titulo: 'Situação Observada', paginas: this.processarCampo(this.parecerFicai.situacao) },
+          { titulo: 'Orientações Dadas à Família', paginas: this.processarCampo(this.parecerFicai.orientacao) }
+        );
+      } else {
+        // SOCIO
+        this.paginasFormatadas.push(
+          { titulo: 'Parecer da Equipe Multiprofissional', paginas: this.processarCampo(this.parecerSocio.equipe) },
+          { titulo: 'Parecer Técnico', paginas: this.processarCampo(this.parecerSocio.tecnico) },
+          { titulo: 'Orientações Finais', paginas: this.processarCampo(this.parecerSocio.orientacao) }
+        );
+      }
     },
     confirmarParecerGeral() {
       const { linhas } = this.formatarTexto(this.parecer);
@@ -139,6 +198,14 @@ const app = createApp({
           this.paginasFormatadas.push(linhasPagina.join('\n'));
         }
       }
+    },
+    verificarCapsLock(event, campo) {
+      this.capsLockCampos[campo] = event.getModifierState && event.getModifierState('CapsLock');
+    },    
+    verificarLimite(texto, campo) {
+      const { linhas } = this.formatarTexto(texto);
+      const totalPermitido = this.qtdPaginas * this.qtdLinhas;
+      this.alertas[campo] = linhas.length > totalPermitido;
     }
   }
 });
