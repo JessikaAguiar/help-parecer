@@ -50,88 +50,128 @@
             <v-divider class="my-10" :thickness="1"></v-divider>
 
             <template v-if="selectType">
-              <v-row style="height: 15%;">
-                <v-col>
-                  <v-container fluid>
-                    <template v-if="selectType === '75989fa6-aefb-4ed4-839b-916ce722f791'">
-                      <v-row>
-                        <v-col cols="6">
-                          <p>Situação observada:</p>
-                          <v-textarea 
-                          @keydown="verificarCapsLock($event, 'situacao')"
-                          @input="verificarLimite(parecerFicai.situacao, 'situacao')"
-                          auto-grow 
-                          variant="outlined"
-                          v-model="parecerFicai.situacao"
-                          :maxlength="maxCaractere"
-                          :rows="qtdPaginas"
-                          ></v-textarea>
-                          <div class="mb-10">
-                            <p v-if="capsLockCampos.situacao">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
-                            <p v-if="alertas.situacao">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
-                          </div>
-                        </v-col>
-                        <v-col cols="6" class="d-flex flex-column justify-start align-start">
-                          <v-btn color="orange lighten-3" @click="showFicaiSituacao = !showFicaiSituacao">Modelos de Situação Observada</v-btn>
-                          <div v-if="showFicaiSituacao" style="display: flex; gap: 12px; overflow-x: auto; padding: 10px; max-width: 100%;"
-                          >
-                            <v-card
-                            v-for="item in getAllParecerByEspecific('FICAI_SITUACAO')"
-                            :key="item.id"
-                            class="mx-auto my-4 ma-10"
-                            elevation="10"
-                            style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
-                            hover
-                            @click="getParecer(item)"
-                          >
-                            <v-card-text style="white-space: normal;">
-                              {{ item.text }}
-                            </v-card-text>
-                            </v-card>
-                          </div>
-                        </v-col>
-                      </v-row>
-                      <v-row>
-                        <v-col cols="6">
-                          <p>Orientações Dadas à Família:</p>
-                          <v-textarea 
-                          @keydown="verificarCapsLock($event, 'orientacaoFicai')"
-                          @input="verificarLimite(parecerFicai.orientacao, 'orientacaoFicai')"
-                          auto-grow 
-                          variant="outlined"
-                          v-model="parecerFicai.orientacao"
-                          :maxlength="maxCaractere"
-                          :rows="qtdPaginas"
-                          ></v-textarea>
-                          <div class="mb-10">
-                            <p v-if="capsLockCampos.orientacaoFicai">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
-                            <p v-if="alertas.orientacaoFicai">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
-                          </div>
-                        </v-col>
-                        <v-col cols="6" class="d-flex flex-column justify-start align-start">
-                          <v-btn color="orange lighten-3" @click="showFicaiOrientacao = !showFicaiOrientacao">Modelos de Orientações Dadas à Família</v-btn>
-                          <div v-if="showFicaiOrientacao" style="display: flex; gap: 12px; overflow-x: auto; padding: 10px; max-width: 100%;"
-                          >
-                            <v-card
-                            v-for="item in getAllParecerByEspecific('FICAI_ORIENTACAO')"
-                            :key="item.id"
-                            class="mx-auto my-4 ma-10"
-                            elevation="10"
-                            style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
-                            hover
-                            @click="getParecer(item)"
-                          >
-                            <v-card-text>
-                              {{ item.text }}
-                            </v-card-text>
-                            </v-card>
-                          </div>
-                        </v-col>
-                      </v-row>
-                    </template>
-                    <template v-else>
-                      <v-form>
-                        <p>Parecer da equipe multiprofissional:</p>
+              <v-container fluid>
+                <template v-if="selectType === '75989fa6-aefb-4ed4-839b-916ce722f791'">
+                  <v-row>
+                    <v-col cols="12" md="6">
+                      <h3>Situação observada:</h3>
+                      <v-expansion-panels class="my-5">
+                        <v-expansion-panel
+                          title="Veja aqui algumas orientações que podem te ajudar."
+                        >
+                        <v-expansion-panel-text>
+                          <ul>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                          </ul>
+                        </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                      <v-textarea 
+                      @keydown="verificarCapsLock($event, 'situacao')"
+                      @input="verificarLimite(parecerFicai.situacao, 'situacao')"
+                      auto-grow 
+                      variant="outlined"
+                      v-model="parecerFicai.situacao"
+                      :maxlength="maxCaractere"
+                      :rows="qtdPaginas"
+                      ></v-textarea>
+                      <div class="mb-10">
+                        <p v-if="capsLockCampos.situacao">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                        <p v-if="alertas.situacao">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
+                      <v-btn color="orange lighten-3" @click="showFicaiSituacao = !showFicaiSituacao">Modelos de Situação Observada</v-btn>
+                      <div v-if="showFicaiSituacao" class="list-cards">
+                        <v-card
+                        v-for="item in getAllParecerByEspecific('FICAI_SITUACAO')"
+                        :key="item.id"
+                        class="mx-auto my-4 ma-10"
+                        elevation="10"
+                        style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                        hover
+                        @click="parecerFicai.situacao = item.text"
+                      >
+                        <v-card-text style="white-space: normal;">
+                          {{ item.text }}
+                        </v-card-text>
+                        </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="my-10" :thickness="1"></v-divider>
+                  <v-row>
+                    <v-col cols="12" md="6">
+                      <h3>Orientações Dadas à Família:</h3>
+                      <v-expansion-panels class="my-5">
+                        <v-expansion-panel
+                          title="Veja aqui algumas orientações que podem te ajudar."
+                        >
+                        <v-expansion-panel-text>
+                          <ul>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                          </ul>
+                        </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                      <v-textarea 
+                      @keydown="verificarCapsLock($event, 'orientacaoFicai')"
+                      @input="verificarLimite(parecerFicai.orientacao, 'orientacaoFicai')"
+                      auto-grow 
+                      variant="outlined"
+                      v-model="parecerFicai.orientacao"
+                      :maxlength="maxCaractere"
+                      :rows="qtdPaginas"
+                      ></v-textarea>
+                      <div class="mb-10">
+                        <p v-if="capsLockCampos.orientacaoFicai">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                        <p v-if="alertas.orientacaoFicai">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
+                      <v-btn color="orange lighten-3" @click="showFicaiOrientacao = !showFicaiOrientacao">Modelos de Orientações Dadas à Família</v-btn>
+                      <div v-if="showFicaiOrientacao" class="list-cards">
+                        <v-card
+                        v-for="item in getAllParecerByEspecific('FICAI_ORIENTACAO')"
+                        :key="item.id"
+                        class="mx-auto my-4 ma-10"
+                        elevation="10"
+                        style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                        hover
+                        @click="parecerFicai.orientacao = item.text"
+                      >
+                        <v-card-text>
+                          {{ item.text }}
+                        </v-card-text>
+                        </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </template>
+                <template v-else>
+                  <v-row>
+                    <v-col cols="12" md="6">
+                       <h3>Parecer da equipe multiprofissional:</h3>
+                       <v-expansion-panels class="my-5">
+                        <v-expansion-panel
+                          title="Veja aqui algumas orientações que podem te ajudar."
+                        >
+                        <v-expansion-panel-text>
+                          <ul>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                          </ul>
+                        </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
                         <v-textarea 
                         @keydown="verificarCapsLock($event, 'equipe')"
                         @input="verificarLimite(parecerSocio.equipe, 'equipe')"
@@ -145,70 +185,164 @@
                           <p v-if="capsLockCampos.equipe">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
                           <p v-if="alertas.equipe">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
                         </div>
-                        
-  
-  
-                        <p>Parecer Técnico:</p>
-                        <v-textarea 
-                        @keydown="verificarCapsLock($event, 'tecnico')"
-                        @input="verificarLimite(parecerSocio.tecnico, 'tecnico')"
-                        auto-grow 
-                        variant="outlined"
-                        v-model="parecerSocio.tecnico"
-                        :maxlength="maxCaractere"
-                        :rows="qtdPaginas"
-                        ></v-textarea>
-                        <div class="mb-10">
-                          <p v-if="capsLockCampos.tecnico">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
-                          <p v-if="alertas.tecnico">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
-                        </div>
-                        
-  
-                        <p>Orientações Finais:</p>
-                        <v-textarea 
-                        @keydown="verificarCapsLock($event, 'orientacaoSocio')"
-                        @input="verificarLimite(parecerSocio.orientacao, 'orientacaoSocio')"
-                        auto-grow 
-                        variant="outlined"
-                        v-model="parecerSocio.orientacao"
-                        :maxlength="maxCaractere"
-                        :rows="qtdPaginas"
-                        ></v-textarea>
-                        <div class="mb-10">
-                          <p v-if="capsLockCampos.orientacaoSocio">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
-                          <p v-if="alertas.orientacaoSocio">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
-                        </div>
-                      </v-form>
-                    </template>
-                  </v-container>
-                  
+                    </v-col>
+                    <v-col cols="12" md="6"  class="d-flex flex-column justify-start align-start">
+                      <v-btn color="orange lighten-3" @click="showSocioEquipe = !showSocioEquipe">Modelos de Parecer da equipe multiprofissional</v-btn>
+                      <div v-if="showSocioEquipe" class="list-cards">
+                        <v-card
+                        v-for="item in getAllParecerByEspecific('SOCIO_EQUIPE')"
+                        :key="item.id"
+                        class="mx-auto my-4 ma-10"
+                        elevation="10"
+                        style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                        hover
+                        @click="parecerSocio.equipe = item.text"
+                      >
+                        <v-card-text>
+                          {{ item.text }}
+                        </v-card-text>
+                        </v-card>
+                      </div>
 
-                  <v-container fluid>
-                    <v-row>
-                      <v-col>
-                        <v-col cols="auto">
-                          <v-btn variant="text" color="red" @click="clear">Limpar</v-btn>
-                        </v-col>
-                      </v-col>
-                      <v-col>
-                        <v-col cols="auto" class="d-flex justify-end">
-                          
-                          <v-btn :disabled="botaoDesabilitado" color="primary" @click="confirmarParecer">Confirmar</v-btn>
-                        </v-col>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                </v-col>
-              </v-row>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="my-10" :thickness="1"></v-divider>
+                  <v-row>
+                    <v-col cols="12" md="6">
+                      <h3>Parecer Técnico:</h3>
+                      <v-expansion-panels class="my-5">
+                        <v-expansion-panel
+                          title="Veja aqui algumas orientações que podem te ajudar."
+                        >
+                        <v-expansion-panel-text>
+                          <ul>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                          </ul>
+                        </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                      <v-textarea 
+                      @keydown="verificarCapsLock($event, 'tecnico')"
+                      @input="verificarLimite(parecerSocio.tecnico, 'tecnico')"
+                      auto-grow 
+                      variant="outlined"
+                      v-model="parecerSocio.tecnico"
+                      :maxlength="maxCaractere"
+                      :rows="qtdPaginas"
+                      ></v-textarea>
+                      <div class="mb-10">
+                        <p v-if="capsLockCampos.tecnico">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                        <p v-if="alertas.tecnico">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                      <v-select
+                        label="Escolha uma especialidade"
+                        :items="typesTecnicos"
+                        item-title="name"
+                        item-value="type"
+                        variant="outlined"
+                        v-model="selectTypeTecnicos"
+                        class="w-50"
+                      ></v-select>
+                      <div v-if="selectTypeTecnicos" class="list-cards">
+                        <v-card
+                        v-for="item in getAllParecerByEspecific(selectTypeTecnicos)"
+                        :key="item.id"
+                        class="mx-auto my-4 ma-10"
+                        elevation="10"
+                        style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                        hover
+                        @click="parecerSocio.tecnico = item.text"
+                      >
+                        <v-card-text>
+                          {{ item.text }}
+                        </v-card-text>
+                        </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-divider class="my-10" :thickness="1"></v-divider>
+                  <v-row>
+                    <v-col cols="12" md="6">
+                      <h3>Orientações Finais:</h3>
+                      <v-expansion-panels class="my-5">
+                        <v-expansion-panel
+                          title="Veja aqui algumas orientações que podem te ajudar."
+                        >
+                        <v-expansion-panel-text>
+                          <ul>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                            <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                          </ul>
+                        </v-expansion-panel-text>
+                        </v-expansion-panel>
+                      </v-expansion-panels>
+                      <v-textarea 
+                      @keydown="verificarCapsLock($event, 'orientacaoSocio')"
+                      @input="verificarLimite(parecerSocio.orientacao, 'orientacaoSocio')"
+                      auto-grow 
+                      variant="outlined"
+                      v-model="parecerSocio.orientacao"
+                      :maxlength="maxCaractere"
+                      :rows="qtdPaginas"
+                      ></v-textarea>
+                      <div class="mb-10">
+                        <p v-if="capsLockCampos.orientacaoSocio">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                        <p v-if="alertas.orientacaoSocio">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" md="6" class="d-flex flex-column justify-start align-start">
+                      <v-btn color="orange lighten-3" @click="showSocioOrientacao = !showSocioOrientacao">Modelos de Orientações Finais</v-btn>
+                      <div v-if="showSocioOrientacao" class="list-cards">
+                        <v-card
+                        v-for="item in getAllParecerByEspecific('SOCIO_ORIENTACAO')"
+                        :key="item.id"
+                        class="mx-auto my-4 ma-10"
+                        elevation="10"
+                        style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+                        hover
+                        @click="parecerSocio.orientacao = item.text"
+                      >
+                        <v-card-text>
+                          {{ item.text }}
+                        </v-card-text>
+                        </v-card>
+                      </div>
+                    </v-col>
+                  </v-row>
+                </template>
+              </v-container>
+              
+              <v-container fluid>
+                <v-row>
+                  <v-col>
+                    <v-col cols="auto">
+                      <v-btn variant="text" color="red" @click="clear">Limpar</v-btn>
+                    </v-col>
+                  </v-col>
+                  <v-col>
+                    <v-col cols="auto" class="d-flex justify-end">
+                      <v-btn :disabled="botaoDesabilitado" color="primary" @click="confirmarParecer">Confirmar</v-btn>
+                    </v-col>
+                  </v-col>
+                </v-row>
+              </v-container>
   
               <v-divider class="my-10" :thickness="1"></v-divider>
+
               <template v-if="paginasFormatadas">
                 <template v-for="(secao, sIndex) in paginasFormatadas" :key="`secao-${sIndex}`">
                   <template v-for="(pagina, pIndex) in secao.paginas" :key="`pagina-${sIndex}-${pIndex}`">
-                    <v-row>
+                    <v-row v-if="pagina.trim().length > 0">
                       <v-col>
                         <h3 class="mb-2">{{ secao.titulo }} - Página {{ pIndex + 1 }}</h3>
-                        <v-textarea auto-grow disabled :model-value="pagina" variant="outlined"></v-textarea>
+                        <v-textarea auto-grow disabled v-model="pagina" variant="outlined"></v-textarea>
                         <v-container fluid>
                           <v-row>
                             <v-col cols="auto">

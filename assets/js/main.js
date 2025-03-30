@@ -8,7 +8,9 @@ const app = createApp({
   data: () => ({
     types: [],
     typesEspecific: [],
+    TypesTecnicos: [],
     selectType: null,
+    selectTypeTecnicos: null,
     allPareceres: [],
     parecer: "",
     parecerFicai: {situacao: '', orientacao: ''},
@@ -21,6 +23,9 @@ const app = createApp({
     alertText: false,
     showFicaiOrientacao: false,
     showFicaiSituacao: false,
+    showSocioEquipe: false,
+    showSocioTecnico: false,
+    showSocioOrientacao: false,
     alertas: {
       situacao: false,
       orientacaoFicai: false,
@@ -73,15 +78,15 @@ const app = createApp({
       if (this.selectType === '75989fa6-aefb-4ed4-839b-916ce722f791') {
         // FICAI
         const camposPreenchidos =
-          this.parecerFicai.situacao.trim().length > 0 &&
+          this.parecerFicai.situacao.trim().length > 0 ||
           this.parecerFicai.orientacao.trim().length > 0;
   
         return alertaAtivo || !camposPreenchidos;
       } else {
         // SOCIO
         const camposPreenchidos =
-          this.parecerSocio.equipe.trim().length > 0 &&
-          this.parecerSocio.tecnico.trim().length > 0 &&
+          this.parecerSocio.equipe.trim().length > 0 ||
+          this.parecerSocio.tecnico.trim().length > 0 ||
           this.parecerSocio.orientacao.trim().length > 0;
   
         return alertaAtivo || !camposPreenchidos;
@@ -97,7 +102,8 @@ const app = createApp({
         const data = await response.json();
 
         this.types = data.types;
-        this.typesEspecific = data.types_especific
+        this.typesEspecific = data.types_especific;
+        this.typesTecnicos = data.types_especific.filter(item => item.type.startsWith("SOCIO_TECNICO"));
         this.allPareceres = data.parecer;
       } catch (error) {
         console.error('Erro ao buscar os pareceres:', error);
@@ -109,7 +115,7 @@ const app = createApp({
     },
     getAllParecerByEspecific(typeKey) {
       const type = this.getTypeEspecific(typeKey);
-      return this.allPareceres.filter(p => p.type === type?.id);
+      return this.allPareceres.filter(p => p.type_especific === type?.id);
     },
     getParecer(item) {
       this.parecer = item.text;

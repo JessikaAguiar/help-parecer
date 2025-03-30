@@ -1,0 +1,9 @@
+.list-cards {
+    display: flex; 
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px; 
+    overflow-x: auto; 
+    padding: 10px; 
+    max-width: 100%;
+};
