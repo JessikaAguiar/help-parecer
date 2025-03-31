@@ -1,9 +1,23 @@
 .list-cards {
     display: flex; 
     justify-content: flex-start;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px; 
     overflow-x: auto; 
     padding: 10px; 
     max-width: 100%;
-};
+}
+
+.text-alert p {
+    background-color: rgb(186, 13, 13) !important;
+    color: white !important;
+    padding: 5px;
+    border-radius: 4px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.selected-card {
+    border: 2px solid #FF9800; 
+    background-color: #FFF3E0; 
+  }

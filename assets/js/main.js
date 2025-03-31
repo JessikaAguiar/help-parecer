@@ -26,6 +26,10 @@ const app = createApp({
     showSocioEquipe: false,
     showSocioTecnico: false,
     showSocioOrientacao: false,
+    snackbar: {
+      status: false,
+      text: ''
+    },
     alertas: {
       situacao: false,
       orientacaoFicai: false,
@@ -124,6 +128,7 @@ const app = createApp({
       this.parecer = "";
       this.parecerFicai = {situacao: '', orientacao: ''},
       this.parecerSocio = {equipe: '', tecnico: '', orientacao: ''},
+      this.selectTypeTecnicos = null,
 
       this.paginasFormatadas = [];
       this.capsLockAtivo = false;
@@ -131,9 +136,11 @@ const app = createApp({
     },
     copiarTexto(texto) {
       navigator.clipboard.writeText(texto).then(() => {
-        alert('Texto copiado com sucesso!');
+        this.snackbar.status = true;
+        this.snackbar.text = 'Texto copiado com sucesso.'
       }).catch(() => {
-        alert('Erro ao copiar o texto.');
+        this.snackbar.status = true;
+        this.snackbar.text = 'Erro ao copiar o texto.'
       });
     },
     formatarTexto(texto) {
