@@ -119,7 +119,7 @@ const app = createApp({
     },
     getAllParecerByEspecific(typeKey) {
       const type = this.getTypeEspecific(typeKey);
-      return this.allPareceres.filter(p => p.type_especific === type?.id);
+      return this.allPareceres.filter(p => p.type === this.selectType && p.type_especific === type?.id);
     },
     getParecer(item) {
       this.parecer = item.text;
