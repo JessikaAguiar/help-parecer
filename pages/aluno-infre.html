@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sujestões</title>
+
+    <!-- Fonts e Vuetify CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet"/>
+
+    <!-- Vue + Vuetify -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-components.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-directives.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <v-app class="pa-10">
+        <v-snackbar
+          v-model="snackbar.status"
+          class="elevation-24"
+          multi-line
+          :timeout="2000"s
+        >
+          {{ snackbar.text }}
+        </v-snackbar>
+        <v-app-bar :elevation="2">
+          <v-app-bar-title><a class="text-decoration-none text-black font-weight-bold" href="/index.html">Sugestões de Parecer</a></v-app-bar-title>
+          <template v-slot:append>
+            <v-list class="d-flex" item-props>
+              <v-list-item
+                v-for="(menu, i) in types"
+                :key="menu.id"
+                :value="menu.id"
+                rounded="xl"
+                class="menu-item"
+                :class="{ 'active-link': currentPage === menu.link }"
+                @click="handleNavigation(menu.link)"
+              >
+                <v-list-item-title v-text="menu.name"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </template>
+        </v-app-bar>
+        <v-navigation-drawer
+          class="bg-orange-lighten-2"
+          v-model="drawer"
+          location="right"
+          width="480"
+          permanent
+        >
+          <h3 class="pa-3">{{titleDrawer}}</h3>
+          <article v-if="showFicaiSituacao">
+            <v-card
+              v-for="item in parecerFilter"
+              :key="item.id"
+              class="mx-auto my-4 ma-10"
+              :class="{'selected-card': parecerFicai.situacao === item.text}"
+              elevation="10"
+              style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+              hover
+              @click="scrollParaSituacao(item.text)"
+            >
+              <v-card-text style="white-space: normal;">
+                {{ item.text }}
+              </v-card-text>
+            </v-card>
+          </article>
+          <article v-if="showFicaiOrientacao">
+            <v-card
+              v-for="item in parecerFilter"
+              :key="item.id"
+              class="mx-auto my-4 ma-10"
+              :class="{'selected-card': parecerFicai.orientacao === item.text}"
+              elevation="10"
+              style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+              hover
+              @click="scrollParaOritencao(item.text)"
+            >
+              <v-card-text>
+                {{ item.text }}
+              </v-card-text>
+            </v-card>
+          </article>
+          <div class="w-50 text-center bg-red-accent-1 mt-11 ma-auto pa-11" v-if="!parecerFilter.length > 0">
+            Não existe modelos para esse parecer.
+          </div>
+        </v-navigation-drawer>
+        <v-main @click="drawer = false">
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <h1 class="text-center">Sugestões de Parecer para Alunos Infrequentes</h1>
+                <v-divider class="my-10" :thickness="1"></v-divider>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="12">
+                <h3 class="mb-10 anchor-target" id="situacao-anchor">Situação observada: </h3>
+                <v-btn color="orange lighten-3" @click.stop="openDrawer('FICAI_SITUACAO')">Modelos de Situação Observada</v-btn>
+                <v-expansion-panels variant="inset" color="green-lighten-4" class="my-5">
+                  <v-expansion-panel
+                    title="Veja aqui algumas orientações que podem te ajudar."
+                  >
+                  <v-expansion-panel-text>
+                    <ul>
+                      <li><strong>Apresente a Composição da Equipe Multiprofissional:</strong> Informe quais são os profissionais envolvidos (ex: psicologia, psicopedagogia, fonoaudiologia, assistência social), destacando que o trabalho é realizado de forma integrada.</li>
+                      
+                      <li><strong>Explique o Foco do Atendimento:</strong> Descreva que o Atendimento Sociopsicopedagógico busca atender de forma individualizada, adotando estratégias específicas conforme cada demanda.</li>
+                      
+                      <li><strong>Declare o Objetivo do Atendimento:</strong> Enfatize que o principal objetivo é identificar as dificuldades dos alunos e estimular seus potenciais, respeitando suas singularidades.</li>
+                      
+                      <li><strong>Ressalte a Importância do Trabalho em Rede:</strong> Reforce que a participação da família e da escola é fundamental para garantir a efetividade das ações realizadas.</li>
+                      
+                      <li><strong>Adote Linguagem Técnica e Humanizada:</strong> Utilize uma linguagem clara, respeitosa e profissional, evitando julgamentos e mantendo o foco no apoio ao desenvolvimento do aluno.</li>
+                    </ul>
+                    
+                  </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <v-textarea 
+                  placeholder="Digite seu texto aqui."
+                  @keydown="verificarCapsLock($event, 'situacao')"
+                  @input="verificarLimite(parecerFicai.situacao, 'situacao')"
+                  rows="6"
+                  auto-grow
+                  variant="outlined"
+                  v-model="parecerFicai.situacao"
+                  :maxlength="maxCaractere"
+                  :rows="qtdPaginas"
+                  ></v-textarea>
+                <div class="mb-10 text-alert">
+                  <p v-if="capsLockCampos.situacao">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                  <p v-if="alertas.situacao">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                </div>
+              </v-col>
+            </v-row>
+            <v-divider class="my-10" :thickness="1"></v-divider>
+            <v-row>
+              <v-col cols="12" md="12">
+                <h3 class="mb-10" id="orientacao-anchor">Orientações Dadas à Família:</h3>
+                <v-btn color="orange lighten-3" @click.stop="openDrawer('FICAI_ORIENTACAO')">Modelos de Orientações Dadas à Família</v-btn>
+                <v-expansion-panels variant="inset" class="my-5" color="green-lighten-4">
+                  <v-expansion-panel
+                    title="Veja aqui algumas orientações que podem te ajudar."
+                  >
+                  <v-expansion-panel-text>
+                    <ul>
+                      <li><strong>Contextualize a Finalidade das Recomendações:</strong> Comece explicando que as orientações visam contribuir com a melhoria do desempenho escolar do(a) aluno(a), com foco no desenvolvimento integral.</li>
+                      
+                      <li><strong>Liste as Recomendações de Forma Objetiva:</strong> Organize as sugestões de maneira clara, como:
+                        <ul class="ml-5">
+                          <li>Estabelecimento de limites quando necessário;</li>
+                          <li>Promoção de momentos afetivos em família;</li>
+                          <li>Criação e manutenção de uma rotina de estudos em casa e na escola;</li>
+                          <li>Acompanhamento da vida escolar pela família;</li>
+                          <li>Busca e adesão ao acompanhamento médico, se indicado.</li>
+                        </ul>
+                      </li>
+                      
+                      <li><strong>Inclua a Responsabilidade Compartilhada:</strong> Destaque que tanto a família quanto a escola têm papéis fundamentais no acompanhamento do aluno.</li>
+                      
+                      <li><strong>Oriente sobre a Continuidade das Ações:</strong> Reforce que a escola deve apoiar e reforçar as orientações fornecidas pela equipe multiprofissional junto aos pais ou responsáveis.</li>
+                      
+                      <li><strong>Use Linguagem Acessível e Respeitosa:</strong> Mantenha uma linguagem acolhedora e orientadora, evitando tom impositivo ou julgador.</li>
+                    </ul>                          
+                  </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <v-textarea 
+                placeholder="Digite seu texto aqui."
+                @keydown="verificarCapsLock($event, 'orientacaoFicai')"
+                @input="verificarLimite(parecerFicai.orientacao, 'orientacaoFicai')"
+                rows="6"
+                auto-grow
+                variant="outlined"
+                v-model="parecerFicai.orientacao"
+                :maxlength="maxCaractere"
+                :rows="qtdPaginas"
+                ></v-textarea>
+                <div class="mb-10 text-alert">
+                  <p v-if="capsLockCampos.orientacaoFicai">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                  <p v-if="alertas.orientacaoFicai">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                </div>
+              </v-col>
+            </v-row>
+          </v-container>
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <v-col cols="auto">
+                  <v-btn color="red" @click="clear">Apagar todos os Textos</v-btn>
+                </v-col>
+              </v-col>
+              <v-col>
+                <v-col cols="auto" class="d-flex justify-end">
+                  <v-btn :disabled="botaoDesabilitado" color="primary" @click="confirmarParecer">Formatar</v-btn>
+                </v-col>
+              </v-col>
+            </v-row>
+            <v-divider class="my-10" :thickness="1"></v-divider>
+          </v-container>
+        </v-main>
+        <v-dialog
+          v-model="dialog"
+          width="60%"
+          persistent
+        >
+          <v-card
+            max-width="100%"
+            prepend-icon="mdi-update"
+          >
+            <template v-slot:text>
+              <h2 class="text-center">Textos Formatados</h2>
+              <template v-if="paginasFormatadas">
+                <template v-for="(secao, sIndex) in paginasFormatadas" :key="`secao-${sIndex}`">
+                  <template v-for="(pagina, pIndex) in secao.paginas" :key="`pagina-${sIndex}-${pIndex}`">
+                    <v-row v-if="pagina.trim().length > 0">
+                      <v-col>
+                        <h3 class="mb-2">{{ secao.titulo }} - Página {{ pIndex + 1 }}</h3>
+                        <v-textarea auto-grow disabled v-model="pagina" variant="outlined"></v-textarea>
+                        <v-btn color="primary" @click="copiarTexto(pagina)">
+                          CÓPIAR
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </template>
+                </template>
+              </template>
+            </template>
+            <template v-slot:actions>
+              <v-btn
+                color="red"
+                class="ms-auto"
+                text="Fechar"
+                @click="dialog = false"
+              ></v-btn>
+            </template>
+          </v-card>
+        </v-dialog>
+      </v-app>
+    </div>
+    <script type="module" src="../assets/js/ficai.js"></script>
+  </body>
+</html>

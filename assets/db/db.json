@@ -332,13 +332,13 @@
         }
     ],
     "types": [
-        { "id": "75989fa6-aefb-4ed4-839b-916ce722f791", "type":"FICAI", "name": "Aluno Infrequente" },
-        { "id": "977226e1-7823-4e74-9607-8df71b30ebc5", "type":"SOCIO_COMP", "name": "Dificuldades Comportamentais" },
-        { "id": "b9f5e9c3-d98a-4906-b219-503f3f110bba", "type":"SOCIO_FONO", "name": "Dificuldades Fonoaudiológicas" },
-        { "id": "5b388fe4-e30f-4a14-993d-ae79b2c9ec7e", "type":"SOCIO_TDAH_SEM_LAUDO", "name": "Indício de TDAH - Sem Laudo" },
-        { "id": "07cde844-415f-4c14-841d-a301948bb0f2", "type":"SOCIO_TDAH_COM_LAUDO", "name": "TDAH - Com Laudo" },
-        { "id": "99cce400-c654-4e3d-a498-aa61b32a2585", "type":"SOCIO_DIF_APREN", "name": "Dificuldade de Aprendizagem" },
-        { "id": "f33101c9-04b1-40de-9500-50c47b8462f0", "type":"SOCIO_VUL_SOCIAL", "name": "Vulnerabilidade Social" }
+        { "id": "75989fa6-aefb-4ed4-839b-916ce722f791", "type":"FICAI", "name": "Aluno Infrequente", "link": "aluno-infre" },
+        { "id": "977226e1-7823-4e74-9607-8df71b30ebc5", "type":"SOCIO_COMP", "name": "Dif. Comportamentais", "link": "dif-comport" },
+        { "id": "b9f5e9c3-d98a-4906-b219-503f3f110bba", "type":"SOCIO_FONO", "name": "Dif. Fonoaudiológicas", "link": "dif-fono" },
+        { "id": "99cce400-c654-4e3d-a498-aa61b32a2585", "type":"SOCIO_DIF_APREN", "name": "Dif. de Aprendizagem", "link": "dif-aprend" },
+        { "id": "5b388fe4-e30f-4a14-993d-ae79b2c9ec7e", "type":"SOCIO_TDAH_SEM_LAUDO", "name": "Indício de TDAH", "link": "indicio-tdah" },
+        { "id": "07cde844-415f-4c14-841d-a301948bb0f2", "type":"SOCIO_TDAH_COM_LAUDO", "name": "TDAH", "link": "tdah" },
+        { "id": "f33101c9-04b1-40de-9500-50c47b8462f0", "type":"SOCIO_VUL_SOCIAL", "name": "Vulnerabilidade Social", "link": "vulne-social" }
     ],
     "types_especific": [
         { "id": "f9333329-e790-4e89-8f5f-76b815f5c44a", "type":"FICAI_SITUACAO", "name": "Situação observada" },

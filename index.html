@@ -20,73 +20,82 @@
   <body>
     <div id="app">
       <v-app>
-        <v-main>
-          <v-container fluid>
-            <v-row>
-              <v-col>
-                <h1>Ajuda - Parecer</h1>
-                <h2>Geral</h2>
-                <p class="my-10">Busca algo mais específico? <v-btn color="deep-purple" href="pages/especifico.html" class="btn">Clique aqui!</v-btn></p>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col>
-                <p>Aqui você redigir seu parecere e formatar .</p>
-              </v-col>
-            </v-row>
-            <v-row style="height: 15%;">
-              <v-col cols="12">
-                <p>Descreva seu texto</p>
-                  <v-textarea 
-                  @keydown="verificarCapsLock"
-                  auto-grow 
-                  variant="outlined"
-                  v-model="parecer"
-                  ></v-textarea>
-                  <span v-if="capsLockAtivo">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</span>
-                <v-container fluid>
-                  <v-row>
-                    <v-col>
-                      <v-col cols="auto">
-                        <v-btn variant="text" color="red" @click="clear">Limpar</v-btn>
-                      </v-col>
-                    </v-col>
-                    <v-col>
-                      <v-col cols="auto" class="d-flex justify-end">
-                        <v-btn :disabled="(!parecer.length > 0)" color="primary" @click="confirmarParecerGeral">Confirmar</v-btn>
-                      </v-col>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-col>
-            </v-row>
+        <v-app-bar :elevation="2">
+          <v-app-bar-title><a class="text-decoration-none text-black font-weight-bold" href="/index.html">Sugestões de Parecer</a></v-app-bar-title>
+          <template v-slot:append>
+            <v-list class="d-flex" item-props>
+              <v-list-item color="primary" v-for="(menu, i) in types" :key="menu.id" rounded="xl" :value="menu.id" :href=`pages/${menu.link}.html`>
+                <v-list-item-title v-text="menu.name"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </template>
+        </v-app-bar>
+        <transition name="fade">
+          <v-main>
+            <v-container>
+              <section class="pa-10">
+                <h1 class="text-h4 font-weight-bold mb-4">Sistema de Apoio à escrita de Pareceres</h1>
+                <p class="text-body-1 mb-4">
+                  Este projeto foi desenvolvido com o objetivo de facilitar a construção de pareceres técnicos e pedagógicos elaborados pelas equipes multiprofissionais da educação. A plataforma oferece sugestões de textos padronizados, estrutura de formatação adequada ao sistema e recursos interativos que agilizam o preenchimento de relatórios, respeitando os limites de caracteres e linhas por página.
+                </p>
+                <p class="text-body-1 mb-4">
+                  Escolha uma das categorias para começar a redigir seu parecer. Você poderá visualizar modelos de situação observada, parecer técnico e orientações finais, com a possibilidade de personalizar e copiar o conteúdo de forma segura e prática.
+                </p>
 
-            <v-divider class="my-10" :thickness="1"></v-divider>
-            <template v-if="paginasFormatadas">
-              <v-row
-              v-for="(pagina, index) in paginasFormatadas"
-              :key="index"
-            >
-              <v-col>
-                <h3 class="mb-2">Página {{ index + 1 }}</h3>
-                <v-textarea auto-grow disabled v-model="paginasFormatadas[index]" variant="outlined"></v-textarea>
-                <v-container fluid>
-                  <v-row>
-                    <v-col cols="auto">
-                      <v-btn
-                        color="primary"
-                        @click="copiarTexto(pagina)"
-                      >
-                        CÓPIAR
-                      </v-btn>
-                    </v-col>
-                  </v-row>
-                </v-container>
-              </v-col>
-            </v-row>
-            </template>
-          </v-container>
-        </v-main>
+                <h1>Para começar</h1>
+                <p class="text-body-1 mb-4">
+                  Selecione uma das categorias no menu acima. Cada item corresponde a um tipo específico de atendimento ou situação observada, como:
+                  <strong>Aluno Infrequente</strong>, <strong>Dificuldades Comportamentais</strong>, <strong>Fonoaudiológicas</strong>, entre outros.
+                  <br><br>
+                  Ao clicar, você será redirecionado para uma página com sugestões específicas, que podem ser copiadas, ajustadas ou combinadas conforme sua necessidade profissional.
+                </p>
+              <section>
+
+              <section style="max-width: 960px; margin: 0 auto 2rem; padding: 1rem 1.5rem; background-color: #f3f4f6; border-radius: 8px; font-size: 1.1rem;">
+                <h2 style="margin-bottom: 0.5rem; font-size: 1.4rem;">📘 Como utilizar as página</h2>
+                <p>
+                  Você pode redigir pareceres personalizados a partir de modelos pré-definidos. Veja como utilizar:
+                </p>
+                <ul style="line-height: 1.8;">
+                  <li>
+                    <strong>1. Modelos:</strong> 
+                    Clique em um dos botões, por exemplo: <em>"Modelos de Situação Observada"</em> para visualizar sugestões. 
+                    Clique em uma delas para adicioná-la automaticamente ao campo de texto correspondente.
+                    <br/>
+                    <video src="./assets/videos/modelo01.mp4" controls class="w-100" height="400"></video>
+                  </li>
+                  <li>
+                    <strong>3. Edição livre:</strong> 
+                    Você pode complementar ou alterar os textos como desejar antes de gerar o parecer final.
+                    <br/>
+                    <video src="./assets/videos/modelo02.mp4" controls class="w-100" height="400"></video>
+                  
+                  </li>
+                  <li>
+                    <strong>4. Formatação:</strong> 
+                    Clique no botão <em>“Formatar”</em> ao final da página para gerar o texto segmentado com o limite de caracteres por linha.
+                    <br/>
+                    <video src="./assets/videos/modelo03.mp4" controls class="w-100" height="400"></video>
+                  </li>
+
+                  <li>
+                    <strong>5. Cópia rápida:</strong> 
+                    Após formatar, utilize o botão <em>“COPIAR”</em> para copiar o texto com o layout exigido.
+                    <br/>
+                    <video src="./assets/videos/modelo04.mp4" controls class="w-100" height="400"></video>
+                  </li>
+                  <li>
+                    <strong>6. Apagar Textos:</strong> 
+                    Ao clicar no botão "Limpar Textos", todos os campos preenchidos da página serão apagados imediatamente. Essa ação é útil quando você deseja começar uma nova sugestão de parecer do zero, sem manter os dados anteriores. Use com atenção, pois essa operação não pode ser desfeita.
+                    <br/>
+                    <video src="./assets/videos/modelo05.mp4" controls class="w-100" height="400"></video>
+                  </li>
+                </ul>
+              </section>
+            </v-container>
+          </v-main>   
+        </transition>
+        
       </v-app>
     </div>
     

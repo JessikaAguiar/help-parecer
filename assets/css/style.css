@@ -20,4 +20,24 @@
 .selected-card {
     border: 2px solid #FF9800; 
     background-color: #FFF3E0; 
-  }
+}
+
+.active-link {
+  background-color: #1976d2 !important;
+  color: white !important;
+  font-weight: bold;
+}
+
+.anchor-target {
+  scroll-margin-top: 80px; /* ajusta conforme a altura da sua v-app-bar */
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}

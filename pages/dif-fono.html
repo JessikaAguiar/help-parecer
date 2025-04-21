@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ajuda - Parecer</title>
+
+    <!-- Fonts e Vuetify CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet"/>
+
+    <!-- Vue + Vuetify -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-components.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.7/dist/vuetify-labs-directives.min.js"></script>
+  </head>
+
+  <body>
+    <div id="app">
+      <v-app class="pa-10">
+        <v-snackbar
+          v-model="snackbar.status"
+          class="elevation-24"
+          multi-line
+          :timeout="2000"s
+        >
+          {{ snackbar.text }}
+        </v-snackbar>
+        <v-app-bar :elevation="2">
+          <v-app-bar-title><a class="text-decoration-none text-black font-weight-bold" href="/index.html">Sugestões de Parecer</a></v-app-bar-title>
+          <template v-slot:append>
+            <v-list class="d-flex" item-props>
+              <v-list-item
+                v-for="(menu, i) in types"
+                :key="menu.id"
+                :value="menu.id"
+                rounded="xl"
+                class="menu-item"
+                :class="{ 'active-link': currentPage === menu.link }"
+                @click="handleNavigation(menu.link)"
+              >
+                <v-list-item-title v-text="menu.name"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </template>
+        </v-app-bar>
+        <v-navigation-drawer
+          class="bg-orange-lighten-2"
+          v-model="drawer"
+          location="right"
+          width="480"
+          permanent
+        >
+          <h3 class="pa-3">{{titleDrawer}}</h3>
+          <article v-if="showSocioEquipe">
+            <v-card
+               v-for="item in parecerFilter"
+              :key="item.id"
+              class="mx-auto my-4 ma-10"
+              :class="{'selected-card': parecerSocio.equipe === item.text}"
+              elevation="10"
+              style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+              hover
+              @click="scrollParaEquipe(item.text)"
+            >
+              <v-card-text>
+                {{ item.text }}
+              </v-card-text>
+            </v-card>
+          </article>
+          <article v-if="showSocioTecnico">
+            <v-card
+              v-for="item in parecerFilter"
+              :key="item.id"
+              class="mx-auto my-4 ma-10"
+              :class="{'selected-card': parecerSocio.tecnico === item.text}"
+              elevation="10"
+              style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+              hover
+              @click="scrollParaTecnico(item.text)"
+            >
+              <v-card-text>
+                {{ item.text }}
+              </v-card-text>
+            </v-card>
+          </article>
+          <article v-if="showSocioOrientacao">
+            <v-card
+              v-for="item in parecerFilter"
+              :key="item.id"
+              class="mx-auto my-4 ma-10"
+              :class="{'selected-card': parecerSocio.orientacao === item.text}"
+              elevation="10"
+              style="min-width: 400px; max-width: 300px; flex-shrink: 0;"
+              hover
+              @click="scrollParaOrientacao(item.text)"
+            >
+              <v-card-text style="white-space: normal;">
+                {{ item.text }}
+              </v-card-text>
+            </v-card>
+          </article>
+          <div class="w-50 text-center bg-red-accent-1 mt-11 ma-auto pa-11" v-if="!parecerFilter.length > 0">
+            Não existe modelos para esse parecer.
+          </div>
+        </v-navigation-drawer>
+        <v-main @click="drawer = false">
+          <v-container fluid>
+            <v-row>
+              <v-col>
+                <h1 class="text-center">Sugestões de Parecer para Dificuldades Fonoaudiológicas</h1>
+                <v-divider class="my-10" :thickness="1"></v-divider>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="12" md="12">
+                <h3 class="mb-10 anchor-target" id="equipe-anchor">Parecer da equipe multiprofissional:</h3>
+                <v-btn color="orange lighten-3"@click.stop="openDrawer('SOCIO_EQUIPE')">Modelos de Parecer da equipe multiprofissional</v-btn>
+                <v-expansion-panels class="my-5" variant="inset" color="green-lighten-4">
+                  <v-expansion-panel
+                    title="Veja aqui algumas orientações que podem te ajudar."
+                  >
+                  <v-expansion-panel-text>
+                    <ul>
+                      <li><strong>Identifique o Polo de Atendimento:</strong> Inicie o texto com o nome da equipe e especifique o polo de origem do atendimento (ex: Polo Norte, Polo Sul, etc.).</li>
+                      
+                      <li><strong>Informe o Local da Atividade:</strong> Indique a escola ou instituição atendida, deixando claro o objetivo da visita.</li>
+                      
+                      <li><strong>Apresente o Objetivo da Visita:</strong> Explique que a visita teve como finalidade realizar atendimentos com professores, alunos e responsáveis para levantamento de informações que subsidiem um estudo de caso.</li>
+                      
+                      <li><strong>Descreva os Tipos de Atendimento:</strong> Mencione brevemente quem foi atendido (professores, responsáveis e alunos) e os aspectos abordados: acadêmico, cognitivo, emocional e social.</li>
+                      
+                      <li><strong>Enfatize a Abordagem Integrada:</strong> Reforce que as informações são coletadas com base nas perspectivas da escola e da família, buscando uma compreensão mais ampla do aluno.</li>
+                      
+                      <li><strong>Mantenha Tom Formal e Objetivo:</strong> Use linguagem clara, objetiva e impessoal, sem julgamentos ou conclusões antecipadas.</li>
+                    </ul>
+                    
+                  </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <v-textarea 
+                  placeholder="Digite seu texto aqui."
+                  @keydown="verificarCapsLock($event, 'equipe')"
+                  @input="verificarLimite(parecerSocio.equipe, 'equipe')"
+                  rows="6"
+                  auto-grow
+                  variant="outlined"
+                  v-model="parecerSocio.equipe"
+                  :maxlength="maxCaractere"
+                  :rows="qtdPaginas"
+                ></v-textarea>
+                <div class="mb-10 text-alert">
+                  <p v-if="capsLockCampos.equipe">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                  <p v-if="alertas.equipe">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                </div>
+              </v-col>
+            </v-row>
+            <v-divider class="my-10" :thickness="1"></v-divider>
+            <v-row>
+              <v-col cols="12" md="12">
+                <h3 class="mb-10 anchor-target" id="tecnico-anchor">Parecer Técnico:</h3>
+                <v-select
+                  label="Escolha uma especialidade"
+                  :items="typesTecnicos"
+                  item-title="name"
+                  item-value="type"
+                  variant="outlined"
+                  v-model="selectTypeTecnicos"
+                  class="my-5"
+                ></v-select>
+                <v-btn class="mb-5" :disabled="!selectTypeTecnicos" color="orange lighten-3" @click.stop="openDrawer(selectTypeTecnicos)">Modelos de Parecer Técnico</v-btn>
+                <v-expansion-panels v-if="selectTypeTecnicos" variant="inset" color="green-lighten-4" class="mb-5">
+                  <v-expansion-panel
+                    title="Veja aqui algumas orientações que podem te ajudar."
+                  >
+                  <v-expansion-panel-text>
+                    <ul>
+                      <template v-if="selectTypeTecnicos === 'SOCIO_TECNICO_PSICOLOGO'">
+                        <li>
+                          <strong>Iniciar com os relatos dos professores:</strong> Incluir as informações repassadas sobre o aluno, tais como: queixas comportamentais ou emocionais, dificuldades de aprendizagem, observações de sala de aula, entre outros.
+                        </li>
+                        <li>
+                          <strong>Quais os instrumentos avaliativos:</strong> Tangram (concentração, coordenação, orientação espacial, raciocínio lógico, percepção visual e espacial e análise de figuras). Torre de Hanói avalia capacidade de memória de trabalho. Baralho das emoções (desenvolve socioafetiva). Arremedo é um jogo projetado para ajudar crianças a enfrentarem seus medos e ansiedade.
+                        </li>
+                        <li>
+                          <strong>Dificuldades comportamentais:</strong> Desrespeito às regras, indisciplina, baixo rendimento, preguiça, insegurança, comportamento desorganizado.
+                        </li>
+                        <li>
+                          <strong>Habilidades de convívio social:</strong> Empatia, comunicação, civilidade, assertividade, autocontrole, enfrentamento, negociação, lidar com frustrações.
+                        </li>
+                        <li>
+                          <strong>Identifica e expressa suas emoções:</strong> Reconhece suas emoções como tristeza, medo, angústia, raiva, alegria e outros.
+                        </li>
+                        <li>
+                          <strong>Orientações repassadas aos pais e responsáveis:</strong> 
+                          Escuta dos Responsáveis: Registre as informações compartilhadas pela família, como: histórico de desenvolvimento, estímulos oferecidos em casa; expectativas da família, outras demandas relevantes (ex: histórico de saúde, dificuldades emocionais, situações de luto, separação, etc.).
+                        </li>
+                        <li>
+                          <strong>Considerações finais:</strong> Orientações à família.
+                        </li>
+                      </template>
+                      <template v-if="selectTypeTecnicos === 'SOCIO_TECNICO_FONOAUDIOLOGO'">
+                        <li><strong>Inicie com o registro da entrevista inicial:</strong> Informe que foi realizada uma entrevista com o(a) professor(a) do aluno, destacando que o objetivo foi levantar informações sobre possíveis dificuldades de linguagem e fala observadas em sala de aula.</li>
+
+                        <li><strong>Descreva a triagem fonoaudiológica realizada:</strong> Relate que foi feita uma triagem com o aluno, especificando as áreas avaliadas: fala, linguagem, motricidade oral e audição.</li>
+
+                        <li><strong>Explique os procedimentos utilizados:</strong> Liste brevemente os instrumentos e métodos aplicados na triagem, como nomeação de figuras, conversa informal, repetição de palavras, leitura de palavras e observação dos órgãos fonoarticulatórios (lábios, língua, palato, bochechas, etc.).</li>
+
+                        <li><strong>Apresente os resultados de forma clara e objetiva:</strong> Descreva os achados da triagem com base nos dados coletados, como a integridade dos órgãos fonoarticulatórios, a preservação aparente da audição, a adequação da linguagem à idade e a ausência de alterações na fala.</li>
+
+                        <li><strong>Mantenha linguagem técnica e impessoal:</strong> Utilize termos fonoaudiológicos apropriados, evitando julgamentos ou diagnósticos formais, caso não sejam parte da prática da triagem.</li>
+
+                        <li><strong>Organize o texto de forma lógica e sequencial:</strong> A sequência recomendada é: entrevista → triagem → instrumentos utilizados → observações e resultados.</li>
+                      </template>
+                      <template v-if="selectTypeTecnicos === 'SOCIO_TECNICO_PSICOPEDAGOGO'">
+                        <li>
+                          <strong>Iniciar com os relatos dos professores:</strong> Incluir as informações repassadas sobre o aluno, tais como: queixas relacionadas ao desempenho escolar (ex: dificuldade na leitura, escrita, atenção, cálculos); comportamento em sala (ex: inquietação, apatia, isolamento, desorganização); participação nas atividades e interação com os colegas; histórico de repetência ou apoio pedagógico anterior.
+                        </li>
+                        <li>
+                          <strong>Descreva os jogos e recursos pedagógicos aplicados:</strong> Dominó de Letra, Cubo Silábico, Leitura Divertida, Jogo da Trilha de Números, Jogo da Memória, Ditado das Palavras, Jogo do Alfabeto Ilustrado.
+                        </li>
+                        <li>
+                          <strong>Aspectos observados:</strong> Cognitivos, atenção e concentração, memória (visual, auditiva, operacional); linguagem oral e escrita; consciência fonológica; raciocínio lógico e resolução de problemas, entre outros.
+                        </li>
+                        <li>
+                          <strong>Escuta dos responsáveis:</strong> Registre as informações compartilhadas pela família, como: histórico de desenvolvimento (fala, motricidade, entrada na escola); rotina de estudos em casa; presença ou ausência de acompanhamento familiar; estímulos oferecidos em casa.
+                        </li>
+                        <li> <strong>Análise Integrada:</strong> Relacionar os dados obtidos nos atendimentos com as informações vindas da escola e da família. Apontar hipóteses sobre fatores que interferem na aprendizagem, sem emitir diagnóstico clínico.</li>
+                        <li>
+                          <strong>Considerações finais:</strong> Orientações à família.
+                        </li>
+                      </template>
+                      <template v-if="selectTypeTecnicos === 'SOCIO_TECNICO_SERVICO_SOCIAL'">
+                        <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                        <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                        <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                        <li>Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi.</li>
+                      </template>
+                    </ul>
+                  </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <v-textarea 
+                  placeholder="Digite seu texto aqui."
+                  @keydown="verificarCapsLock($event, 'tecnico')"
+                  @input="verificarLimite(parecerSocio.tecnico, 'tecnico')"
+                  rows="6"
+                  auto-grow
+                  variant="outlined"
+                  v-model="parecerSocio.tecnico"
+                  :maxlength="maxCaractere"
+                  :rows="qtdPaginas"
+                ></v-textarea>
+                <div class="mb-10 text-alert">
+                  <p v-if="capsLockCampos.tecnico">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                  <p v-if="alertas.tecnico">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                </div>
+              </v-col>
+            </v-row>
+            <v-divider class="my-10" :thickness="1"></v-divider>
+            <v-row>
+              <v-col cols="12" md="12">
+                <h3 class="mb-10" id="orientacao-anchor">Orientações Finais:</h3>
+                <v-btn color="orange lighten-3" @click.stop="openDrawer('SOCIO_ORIENTACAO')">Modelos de Orientações Finais</v-btn>
+                <v-expansion-panels variant="inset" color="green-lighten-4" class="my-5">
+                  <v-expansion-panel
+                    title="Veja aqui algumas orientações que podem te ajudar."
+                  >
+                  <v-expansion-panel-text>
+                    <ul>
+                      <li><strong>Contextualize a Análise Realizada:</strong> Informe que a equipe, após os atendimentos, realizou uma análise dos dados coletados com o objetivo de compreender os fatores que impactam o desenvolvimento do aluno.</li>
+                      
+                      <li><strong>Descreva os Fatores Identificados:</strong> Mencione, de forma geral, que foram identificados aspectos que influenciam o processo de aprendizagem, sem entrar em detalhes específicos no texto geral.</li>
+                      
+                      <li><strong>Apresente as Recomendações:</strong> Indique que foram feitas sugestões de suporte pedagógico e estratégias psicopedagógicas, respeitando a individualidade e o contexto do aluno.</li>
+                      
+                      <li><strong>Inclua Possíveis Encaminhamentos:</strong> Caso pertinente, registre que a equipe pode sugerir encaminhamentos para outros profissionais especializados (fonoaudiólogos, psicólogos, etc.).</li>
+                      
+                      <li><strong>Sugira o Acompanhamento pela Escola:</strong> Reforce a importância do acompanhamento contínuo da equipe escolar, orientando que as recomendações sejam observadas e, se possível, registradas no processo educativo.</li>
+                      
+                      <li><strong>Mantenha Tom Ético e Profissional:</strong> Evite juízos de valor, termos diagnósticos ou qualquer afirmação que extrapole a função observacional e orientadora da equipe.</li>
+                    </ul>
+                  </v-expansion-panel-text>
+                  </v-expansion-panel>
+                </v-expansion-panels>
+                <v-textarea
+                  placeholder="Digite seu texto aqui."
+                  @keydown="verificarCapsLock($event, 'orientacaoSocio')"
+                  @input="verificarLimite(parecerSocio.orientacao, 'orientacaoSocio')"
+                  rows="6"
+                  auto-grow
+                  variant="outlined"
+                  v-model="parecerSocio.orientacao"
+                  :maxlength="maxCaractere"
+                  :rows="qtdPaginas"
+                ></v-textarea>
+                <div class="mb-10 text-alert">
+                  <p v-if="capsLockCampos.orientacaoSocio">⚠️ Você está digitando com letras maiúsculas (Caps Lock ativado).</p>
+                  <p v-if="alertas.orientacaoSocio">⚠️ O texto alcançou a quantidade de linhas, e o limite é {{this.qtdPaginas * this.qtdLinhas}}.</p>
+                </div>
+              </v-col>
+            </v-row>
+              
+            <v-container fluid>
+              <v-row>
+                <v-col>
+                  <v-col cols="auto">
+                    <v-btn variant="text" color="red" @click="clear">Apagar todos os Textoss</v-btn>
+                  </v-col>
+                </v-col>
+                <v-col>
+                  <v-col cols="auto" class="d-flex justify-end">
+                    <v-btn :disabled="botaoDesabilitado" color="primary" @click="confirmarParecer">Formatar</v-btn>
+                  </v-col>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-container>
+        </v-main>
+        <v-dialog
+          v-model="dialog"
+          width="60%"
+          persistent
+        >
+          <v-card
+            max-width="100%"
+            prepend-icon="mdi-update"
+          >
+            <template v-slot:text>
+              <h2 class="text-center">Textos Formatados</h2>
+              <template v-if="paginasFormatadas">
+                <template v-for="(secao, sIndex) in paginasFormatadas" :key="`secao-${sIndex}`">
+                  <template v-for="(pagina, pIndex) in secao.paginas" :key="`pagina-${sIndex}-${pIndex}`">
+                    <v-row v-if="pagina.trim().length > 0">
+                      <v-col>
+                        <h3 class="mb-2">{{ secao.titulo }} - Página {{ pIndex + 1 }}</h3>
+                        <v-textarea auto-grow disabled v-model="pagina" variant="outlined"></v-textarea>
+                        <v-btn color="primary" @click="copiarTexto(pagina)">
+                          CÓPIAR
+                        </v-btn>
+                      </v-col>
+                    </v-row>
+                  </template>
+                </template>
+              </template>
+            </template>
+            <template v-slot:actions>
+              <v-btn
+                color="red"
+                class="ms-auto"
+                text="Fechar"
+                @click="dialog = false"
+              ></v-btn>
+            </template>
+          </v-card>
+        </v-dialog>
+      </v-app>
+    </div>
+    
+    <script type="module" src="../assets/js/parecerCore.js"></script>
+    <script type="module" src="../assets/js/dif-fono.js"></script>
+  </body>
+</html>
