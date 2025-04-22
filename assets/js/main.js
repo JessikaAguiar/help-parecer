@@ -1,6 +1,5 @@
 const { createApp } = Vue;
 const { createVuetify } = Vuetify;
-const JSON_PATH = `../assets/db/db.json`;
 
 const vuetify = createVuetify();
 
@@ -14,7 +13,7 @@ const app = createApp({
   methods: {
     async loadTypes() {
       try {
-        const response = await fetch(JSON_PATH);
+        const response = await fetch('./assets/db/db.json');
         if (!response.ok) throw new Error('Erro ao carregar o JSON');
         const data = await response.json();
         this.types = data.types;
