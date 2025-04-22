@@ -21,7 +21,7 @@
     <div id="app">
       <v-app>
         <v-app-bar :elevation="2">
-          <v-app-bar-title><a class="text-decoration-none text-black font-weight-bold" href="/index.html">Sugestões de Parecer</a></v-app-bar-title>
+          <v-app-bar-title><a class="text-decoration-none text-black font-weight-bold" href="/help-parecer/index.html">Sugestões de Parecer</a></v-app-bar-title>
           <template v-slot:append>
             <v-list class="d-flex" item-props>
               <v-list-item color="primary" v-for="(menu, i) in types" :key="menu.id" rounded="xl" :value="menu.id" :href=`pages/${menu.link}.html`>
